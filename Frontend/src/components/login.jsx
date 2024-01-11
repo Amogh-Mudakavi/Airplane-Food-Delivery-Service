@@ -22,48 +22,42 @@ const LoginForm = ({ setIsLoggedIn }) => {
     }));
   }
 
-  function submitHandler(event) {
+  async function submitHandler(event) {
     event.preventDefault();
 
-    // Get stored user data (replace this with your actual data)
-    const storedUsers = [
-      {
-        email: 'user1@example.com',
-        password: 'password1',
-      },
-      {
-        email: 'user2@example.com',
-        password: 'password2',
-      },
+    try {
+      const response = await fetch('http://localhost:4001/api/v1/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
 
-    ];
+      const data = await response.json();
+      console.log('Response:', data); // Log the response
 
-    // Check if the entered credentials match any stored user
-    const foundUser = storedUsers.find(
-      (user) => user.email === formData.email && user.password === formData.password
-    );
-
-    if (foundUser) {
-      setIsLoggedIn(true);
-      toast.success('Logged in successfully!');
-      navigate('/product');
-    } else {
-      toast.error('Invalid email or password');
+      if (response.ok) {
+        setIsLoggedIn(true);
+        toast.success('Logged in successfully!');
+        navigate('/product');
+      } else {
+        toast.error(data.message || 'Error logging in');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error('An error occurred while logging in');
     }
   }
 
-  // Hide navbar on the login page
   const hideNavbar = location.pathname === '/login';
 
- 
   return (
     <div className="flex flex-col min-h-screen" style={{ backgroundImage: 'url("/food_signup.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}>
-      {/* Navbar (conditionally rendered) */}
       {!hideNavbar && (
         <nav className="py-4 px-8 flex justify-end">
           <Link to="/">
             <div className="flex items-center">
-              {/* Icon (IoHomeOutline) is inside the div */}
               <span className="text-2xl" style={{ color: 'white' }}>
                 <TiHome />
               </span>
@@ -72,12 +66,9 @@ const LoginForm = ({ setIsLoggedIn }) => {
         </nav>
       )}
 
-      {/* Main Content */}
       <div className="flex items-center justify-center flex-grow">
         <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg bg-opacity-75">
-          {/* Login Form */}
           <form onSubmit={submitHandler} className="space-y-4">
-            {/* Email Address */}
             <div>
               <label className="block text-sm text-gray-700 mb-1">Email Address</label>
               <input
@@ -91,7 +82,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
               />
             </div>
 
-            {/* Password */}
             <div className="relative">
               <label className="block text-sm text-gray-700 mb-1">Password</label>
               <input
@@ -115,7 +105,6 @@ const LoginForm = ({ setIsLoggedIn }) => {
               </span>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               className="w-full mt-6 bg-blue-500 text-white py-2 px-4 rounded-full transition duration-300 hover:bg-white hover:text-blue-500 border border-blue-500"
@@ -129,4 +118,4 @@ const LoginForm = ({ setIsLoggedIn }) => {
   );
 };
 
-export default LoginForm
+export default LoginForm;

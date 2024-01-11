@@ -3,7 +3,7 @@ import Spinner from "../components/Spinner";
 import Product from "../components/Product";
 
 const Home = () => {
-  const API_URL = "http://localhost:4000/fetchdata";
+  const API_URL = "http://localhost:4001/fetchdata";
   const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
 
